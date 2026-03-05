@@ -1,3 +1,13 @@
+import ContentBlock from "@/app/components/content-block";
+import H1 from "@/app/components/H1";
+
 export default function Page() {
-  return <main>Account Page</main>;
+  return (
+    <main>
+      <H1 className="my-8 text-white">Your Account</H1>
+      <ContentBlock className="h-125 flex justify-center items-center">
+        <p>Logged in as ...</p>
+      </ContentBlock>
+    </main>
+  );
 }
