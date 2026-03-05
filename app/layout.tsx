@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Take care of people's pets responsibly with PetSoft.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

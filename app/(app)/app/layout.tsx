@@ -1,33 +1,31 @@
 import AppFooter from "@/app/components/app-footer";
 import AppHeader from "@/app/components/app-header";
 import BackgroundPattern from "@/app/components/background-pattern";
+import { Toaster } from "@/app/components/ui/sonner";
 import PetContextProvider from "@/app/contexts/pet-context-provider";
 import SearchContextProvider from "@/app/contexts/search-context-provider";
-import { Pet } from "@/lib/types";
+import { db } from "@/db/drizzle";
+import { pet } from "@/db/schema";
+import { SelectPet } from "@/lib/types";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const response = await fetch(
-    "https://bytegrad.com/course-assets/projects/petsoft/api/pets",
-  );
-  if (!response.ok) {
-    throw new Error("Could not fetch pets");
-  }
-  const data: Pet[] = await response.json();
+  const pets: SelectPet[] = await db.select().from(pet);
 
   return (
     <>
       <BackgroundPattern />
       <div className="flex flex-col max-w-262.5 mx-auto px-4 min-h-screen">
         <AppHeader />
-        <PetContextProvider data={data}>
+        <PetContextProvider data={pets}>
           <SearchContextProvider>{children}</SearchContextProvider>
         </PetContextProvider>
         <AppFooter />
       </div>
+      <Toaster position="top-right" />
     </>
   );
 }

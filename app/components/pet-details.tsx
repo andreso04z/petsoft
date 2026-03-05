@@ -1,8 +1,11 @@
 "use client";
 
 import { usePetContext } from "@/lib/hooks";
-import { Pet } from "@/lib/types";
+import { SelectPet } from "@/lib/types";
 import Image from "next/image";
+import PetButton from "./pet-button";
+import { checkoutPet } from "../actions/actions";
+import { useTransition } from "react";
 
 export default function PetDetails() {
   const { selectedPet } = usePetContext();
@@ -23,20 +26,41 @@ export default function PetDetails() {
 }
 
 type Props = {
-  pet: Pet;
+  pet: SelectPet;
 };
 
 function TopBar({ pet }: Props) {
+  const imageSrc =
+    pet.imageUrl ??
+    "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png";
+  const [isPending, startTransition] = useTransition();
+
   return (
     <div className="flex items-center bg-white px-8 py-5 border-b border-light">
       <Image
-        src={pet?.imageUrl}
+        src={imageSrc}
         alt="Selected pet image"
         height={75}
         width={75}
         className="h-18.75 w-18.75 rounded-full object-cover"
       />
-      <h2 className="text-3xl font-semibold leading-7 ml-5">{pet?.name}</h2>
+      <h2 className="text-2xl sm:text-3xl font-semibold leading-7 ml-5">
+        {pet?.name}
+      </h2>
+      <div className="flex ml-auto space-x-1 sm:space-x-2">
+        <PetButton actionType="edit">Edit</PetButton>
+        <PetButton
+          actionType="checkout"
+          disabled={isPending}
+          onClick={async () => {
+            startTransition(async () => {
+              await checkoutPet(pet.id);
+            });
+          }}
+        >
+          Checkout
+        </PetButton>
+      </div>
     </div>
   );
 }
