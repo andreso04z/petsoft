@@ -7,17 +7,9 @@ import { sleep } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export async function addPet(formData: FormData) {
+export async function addPet(newPet: InsertPet) {
+    await sleep(3000);
     try {
-        const newPet: InsertPet = {
-            name: formData.get("name") as string,
-            ownerName: formData.get("ownerName") as string,
-            age: Number(formData.get("age") as string),
-            imageUrl:
-                (formData.get("imageUrl") as string) ||
-                "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png",
-            notes: formData.get("notes") as string,
-        };
         await db.insert(pet).values({
             ...newPet,
         });
@@ -30,17 +22,9 @@ export async function addPet(formData: FormData) {
     revalidatePath("/app", "layout");
 }
 
-export async function editPet(petId: string, formData: FormData) {
+export async function editPet(petId: string, updatedPet: InsertPet) {
+    await sleep(3000);
     try {
-        const updatedPet: InsertPet = {
-            name: formData.get("name") as string,
-            ownerName: formData.get("ownerName") as string,
-            age: Number(formData.get("age") as string),
-            imageUrl:
-            (formData.get("imageUrl") as string) ||
-            "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png",
-            notes: formData.get("notes") as string,
-        };
         await db.update(pet).set(updatedPet).where(eq(pet.id, petId));
     } catch (error) {
         return {
@@ -52,6 +36,7 @@ export async function editPet(petId: string, formData: FormData) {
 }
 
 export async function checkoutPet(petId: string) {
+    await sleep(3000);
     try {
         await db.delete(pet).where(eq(pet.id, petId));
     } catch (error) {
